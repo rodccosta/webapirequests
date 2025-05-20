@@ -1,0 +1,50 @@
+<html lang="pt-br">
+<script>
+    async function consultarCep() {
+        const cep = document.getElementById("cep").value;
+        if (cep.length !== 8) {
+            alert("CEP inválido, o CEP tem que ter 8 dígitos");
+            limparCampos()
+            return
+        }
+        try {
+            const response = await fetch(`https://brasilapi.com.br/api/cep/v1/${cep}`);
+            if (!response.ok) {
+                throw new Error("Erro ao consultar o CEP.");
+            }
+
+            const data = await response.json();
+            limparCampos()
+            document.getElementById("rua").value = data.street || "";
+            document.getElementById("bairro").value = data.neighborhood || "";
+            document.getElementById("cidade").value = data.city || "";
+            document.getElementById("estado").value = data.state || "";
+
+
+        } catch (error) {
+            alert("Não foi possível encontrar o endereço. Verifique o CEP e tente novamente.");
+            console.error(error);
+        }
+    }
+    function limparCampos() {
+        document.getElementById("rua").value = "";
+        document.getElementById("bairro").value = "";
+        document.getElementById("cidade").value = "";
+        document.getElementById("estado").value = "";
+    }
+
+</script>
+<head>  <title>Teste BrasilAPI Javascript</title></head>
+<body>
+    <h2>Digite seu Endereço</h2>
+    <form id="cepForm">
+        <label>CEP:</label><input type="text" id="cep" onchange="consultarCep()" /><br>
+        <label>Rua:</label><input type="text" id="rua" /><br>
+        <label>Nº:</label><input type="text" id="num" /><br>
+        <label>Bairro:</label><input type="text" id="bairro" /><br>
+        <label>Cidade:</label><input type="text" id="cidade" /><br>
+        <label>Estado:</label><input type="text" id="estado" />
+    </form>
+</body>
+
+</html>
